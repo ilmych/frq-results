@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sloane's FRQ Results</title>
+    <style>
+        :root {
+            --primary: #3a6ea5;
+            --primary-light: #c0d6e4;
+            --primary-dark: #1e3c5a;
+            --accent: #ff7d49;
+            --success: #45ac45;
+            --warning: #f9a94a;
+            --danger: #e05353;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: var(--light);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .question-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        .question-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .question-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .score-badge {
+            background: white;
+            color: var(--primary-dark);
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .question-body {
+            padding: 20px;
+        }
+        
+        .summary-section {
+            background-color: var(--primary-light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-section h3 {
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+        
+        .breakdown-toggle {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .breakdown-toggle:hover {
+            background-color: #b0cedf;
+        }
+        
+        .breakdown-toggle .icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .breakdown-toggle[aria-expanded="true"] .icon {
+            transform: rotate(180deg);
+        }
+        
+        .breakdown-content {
+            display: none;
+        }
+        
+        .breakdown-content.active {
+            display: block;
+        }
+        
+        .criteria-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--gray-light);
+            padding-bottom: 20px;
+        }
+        
+        .criteria-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .criteria-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .criteria-header h4 {
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+        }
+        
+        .criteria-score {
+            font-weight: bold;
+        }
+        
+        .full-score {
+            color: var(--success);
+        }
+        
+        .partial-score {
+            color: var(--warning);
+        }
+        
+        .zero-score {
+            color: var(--danger);
+        }
+        
+        .comment-section {
+            background-color: var(--gray-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .comment-section p {
+            margin-bottom: 10px;
+        }
+        
+        .comment-section p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .improvement-section {
+            background-color: #fff8ee;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .improvement-section h5 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .score-badge {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Wait for DOM to be fully loaded before adding event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all toggle buttons
+            const toggleButtons = document.querySelectorAll('.breakdown-toggle');
+            
+            // Add click event listener to each button
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get current state
+                    const expanded = this.getAttribute('aria-expanded') === 'true';
+                    
+                    // Update button state
+                    this.setAttribute('aria-expanded', !expanded);
+                    
+                    // Get target content
+                    const targetId = this.getAttribute('aria-controls');
+                    const targetContent = document.getElementById(targetId);
+                    
+                    // Toggle active class to show/hide content
+                    if (expanded) {
+                        targetContent.classList.remove('active');
+                    } else {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+    <div class="container">
+        <header>
+            <h1>Sloane's FRQ Results</h1>
+            <div class="subtitle">AP Language and Composition - 2025-04-24</div>
+        </header>
+        
+        <!-- Question 1 -->
+        <div class="question-card">
+            <div class="question-header">
+                <h2>Question 1 - 'Synthesis'</h2>
+                <div class="score-badge">
+                    <span>Score: 6</span>
+                </div>
+            </div>
+            <div class="question-body">
+                <div class="summary-section">
+                    <h3>Summary</h3>
+                    <p>The essay presents a clear and defensible thesis on animal testing as a 'necessary evil,' effectively incorporating evidence from multiple sources to support this position while demonstrating sophisticated understanding of the ethical complexities involved. To improve, consider strengthening the thesis by specifying criteria for justified animal testing, deepening the philosophical discussion about humans' place in nature, and providing more direct quotations and vivid examples to enhance persuasiveness. Additionally, further explore counterarguments and alternative testing methods to demonstrate a more comprehensive understanding of the debate.</p>
+                </div>
+                
+                <button class="breakdown-toggle" aria-expanded="false" aria-controls="q1-breakdown">
+                    View Detailed Breakdown
+                    <span class="icon">▼</span>
+                </button>
+                
+                <div id="q1-breakdown" class="breakdown-content">
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Thesis</h4>
+                            <div class="criteria-score full-score">Score: 1/1</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>The thesis statement effectively takes a clear and defensible position on the use of animal testing: "While the use of animal testing in laboratory research is often unnecessarily cruel and occasionally ineffective, it is a necessary evil: advancing our medical field and saving millions of people." This thesis directly responds to the prompt by acknowledging both the negative aspects of animal testing (cruelty and occasional ineffectiveness) while ultimately arguing that it is necessary for medical advancement and saving human lives. The statement establishes a line of reasoning that will guide the rest of the essay.</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <ul><li>Consider strengthening the thesis by incorporating specific criteria for when animal testing is justified versus when it's unnecessary</li><li>You could acknowledge the moral complexity more explicitly by referencing the ethical frameworks mentioned in the sources</li><li>For greater specificity, you might mention the hybrid approach that you discuss later in the essay as part of your position in the thesis</li></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Evidence & Reasoning</h4>
+                            <div class="criteria-score full-score">Score: 4/4</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>The essay earns 4 points for Row B (Evidence & Commentary). The student effectively incorporates specific evidence from at least three sources (A, B, D, E, C, and F), establishing a clear and logical line of reasoning that supports their thesis that animal testing is a 'necessary evil.' The student provides strong evidence distribution, using sources to support different claims across paragraphs. In paragraph 2, they cite specific statistics from Source A about the millions of people helped by animal-tested treatments, then integrate Source B's counterargument about testing ineffectiveness before using Source D to address and refute that criticism. In paragraph 3, they effectively synthesize Sources E and C to discuss hybrid approaches that limit unnecessary testing, and use Source F to consider ethical objections. Throughout the essay, the student clearly explains how each piece of evidence connects to their argument, showing sophisticated understanding of the relationships between animal testing, medical benefits, and ethical concerns.</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <p>While this is a strong essay that already earns full points for evidence and commentary, the student could further strengthen their argument by: (1) Including more direct quotations from the sources, particularly when discussing the hybrid approaches in paragraph 3; (2) More explicitly addressing the statistical significance of the 67% figure from Source C about mice testing; (3) Developing their commentary about the hypocritical stance in the final paragraph with more specific evidence about how humans benefit from animal usage beyond just testing; and (4) Providing a more nuanced discussion of the potential for alternative testing methods mentioned in the sources to show a comprehensive understanding of the debate.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Sophistication</h4>
+                            <div class="criteria-score full-score">Score: 1/1</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>This essay earns a score of 1 for sophistication because it demonstrates a complex understanding of the rhetorical situation and explores nuanced tensions across the sources. The student effectively situates the argument within the broader context of humanity's place in the natural world, stating in the opening paragraph that we should be 'noting just how animal we are too' and framing animal testing as part of humans' participation in the 'primal circle of life.' This philosophical framing elevates the discussion beyond a simple debate about ethics.</p><p>The essay demonstrates sophistication by acknowledging complexities rather than oversimplifying. For example, in paragraph two, the student presents the life-saving benefits of animal testing while also acknowledging its imperfections: 'Indeed, animal testing is not 100% effective at all times.' This nuanced approach recognizes that scientific progress inherently involves failures.</p><p>The third paragraph further demonstrates sophistication by exploring the concept of a 'hybrid approach' to animal testing, showing awareness of ethical gradations rather than binary thinking. The essay also offers a compelling and consistent rhetorical style that challenges readers to confront their own potential hypocrisy: 'It is a hypocritical stance to be against animal testing, but to eat meat everyday.'</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <p>While this essay demonstrates sophistication, here are areas for improvement:</p><ul><li><strong>Deepen the philosophical discussion</strong> - The introduction introduces the intriguing concept of humans as animals participating in the circle of life, but this could be more fully developed throughout the essay. Consider how this perspective fundamentally reframes ethical responsibilities.</li><li><strong>Strengthen stylistic vividness</strong> - While the essay has moments of compelling language, adding more vivid examples and imagery would enhance persuasiveness. For instance, when discussing life-saving medical advances, specific examples of individuals or communities benefiting would create emotional resonance.</li><li><strong>Further explore counterarguments</strong> - The essay acknowledges opposition to animal testing but could more thoroughly engage with the strongest arguments against it. This would demonstrate even greater sophistication by showing a deep understanding of multiple perspectives.</li></ul><p>A more sophisticated response might also explore cultural and historical perspectives on human relationships with animals, examine potential future technologies that could replace animal testing, or consider how different societies balance scientific progress with ethical concerns about animal welfare.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div class="question-card">
+            <div class="question-header">
+                <h2>Question 2 - 'Rhetorical Analysis'</h2>
+                <div class="score-badge">
+                    <span>Score: 5</span>
+                </div>
+            </div>
+            <div class="question-body">
+                <div class="summary-section">
+                    <h3>Summary</h3>
+                    <p>The essay successfully presents a clear thesis identifying Einstein's contrasting rhetorical strategies in both passages, with strong specific evidence supporting claims about his use of data, definitions, point of view, and rhetorical questions. To improve, focus on analyzing how multiple rhetorical choices work together throughout both passages, incorporate more direct quotations when discussing 'charged diction,' and explicitly address how Einstein's choices reflect his awareness of different audiences for scientific versus social commentary.</p>
+                </div>
+                
+                <button class="breakdown-toggle" aria-expanded="false" aria-controls="q2-breakdown">
+                    View Detailed Breakdown
+                    <span class="icon">▼</span>
+                </button>
+                
+                <div id="q2-breakdown" class="breakdown-content">
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Thesis</h4>
+                            <div class="criteria-score full-score">Score: 1/1</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>The thesis statement effectively addresses the prompt by identifying the rhetorical strategies Einstein uses in each passage and explaining how they serve different purposes. Located in the first paragraph: "In Passage A, Albert Einstein uses data, definitions, and an objective tone to inform the reader of scientific truths. In Passage B, on the contrary, Einstein utilizes charged diction, first person point of view, and rhetorical questions to guide the reader through his thought-process on the potential solution of a socialist economy." This thesis makes specific claims about Einstein's contrasting rhetorical approaches that can be defended through textual analysis.</p><p>The thesis is further reinforced in the conclusion, where the student reiterates how Einstein's different rhetorical strategies in each passage serve specific purposes: "While his data, definitions, and objective tone in passage A build a logical appeal that informs the reader of truths in physics, his more personal diction, first person point of view, and rhetorical questions in passage B provide credibility and relatability in his argument of the potential solution of a socialist economy."</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <ul><li>Consider more explicitly addressing how Einstein's rhetorical choices specifically shape his arguments in each passage</li><li>The thesis could be strengthened by briefly mentioning the overall effect or purpose of these contrasting styles (e.g., how they reflect the different contexts or audiences for scientific versus social commentary)</li><li>While the thesis identifies specific rhetorical techniques, it could more clearly articulate how these techniques contribute to Einstein's overall persuasive strategies</li></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Evidence & Reasoning</h4>
+                            <div class="criteria-score partial-score">Score: 3/4</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>The essay earns a score of 3 for Evidence & Commentary. The student provides specific textual evidence to support all claims in a well-structured line of reasoning comparing Einstein's approaches in the two passages. The commentary consistently explains how the evidence supports the thesis that Einstein uses different rhetorical strategies in the two passages. The essay analyzes several rhetorical choices (quotation marks, data points, first-person point of view, charged diction, and rhetorical questions) and explains how these contribute to Einstein's purpose in each passage.</p><p>For example, the essay effectively explains how Einstein's use of quotation marks around words like \"events\" and \"simultaneous\" in Passage A serves to \"define them and clarify them\" to ensure readers' understanding. Similarly, the analysis of first-person point of view in Passage B (\"I am convinced\") shows how it \"contributes to an ethical appeal, as he is personally claiming credit for his viewpoints.\" The connection between rhetorical questions and Einstein's admission of uncertainty is also well explained.</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <p>To reach a score of 4, the essay needs to more consistently explain how <em>multiple</em> rhetorical choices work together throughout both passages. While the essay identifies several rhetorical strategies, it could go further in showing how these strategies interact. For example:</p><ol><li>Analyze how Einstein's scientific tone in Passage A creates a foundation of credibility that supports his more speculative arguments in Passage B</li><li>Explore how the contrast between impersonal language in Passage A and personal language in Passage B reveals Einstein's different purposes for different audiences</li><li>Examine how specific word choices (not just general "charged diction") function to persuade the reader about socialism's merits while acknowledging its risks</li><li>Connect Einstein's use of definition in Passage A with his acknowledgment of definitional problems in implementing socialism in Passage B</li></ol><p>Additionally, incorporate more direct quotations from both passages to strengthen your specific evidence, particularly when analyzing Einstein's "charged diction" in Passage B.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Sophistication</h4>
+                            <div class="criteria-score full-score">Score: 1/1</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>The essay demonstrates sophisticated understanding of how Einstein employs different rhetorical approaches in each passage to achieve distinct purposes. The analysis effectively explores the tension between objective scientific communication in Passage A and subjective philosophical exploration in Passage B. The student perceptively identifies how Einstein adapts his rhetorical strategies to each context, showing awareness that the same thinker must employ different approaches for different rhetorical situations.</p><p>The essay shows particular sophistication in examining the relationship between Einstein's use of first-person in Passage B and his ethical appeal, noting how 'he builds an ethical appeal where he seems invested yet aware of limitations.' The student recognizes the rhetorical significance of Einstein's willingness to pose questions rather than provide definitive answers, interpreting this as a deliberate choice that 'allows for his argument for a socialist system... to appear well-balanced, intuitive, and self-aware.' This demonstrates understanding of complex rhetorical maneuvers beyond simple identification of devices.</p><p>The essay also excels in contrasting Einstein's 'purely denotative objectivity' in Passage A with his more 'dramatic terms' in Passage B, showing how Einstein deliberately shifts his language to serve different purposes. The student recognizes that Einstein's scientific explanation requires 'logical validity and appeal' while his philosophical musings benefit from a more engaged, questioning approach. This level of analysis reveals sophisticated understanding of rhetorical purpose.</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <ul><li>Consider more explicitly addressing how Einstein's rhetorical choices reflect his awareness of different audiences for each passage, perhaps contrasting the academic/scientific audience of Passage A with the more general audience of Passage B.</li><li>Explore more deeply the political context in which Einstein is advocating for socialism, and how this difficult rhetorical situation influences his careful, questioning approach.</li><li>Strengthen the conclusion by more explicitly connecting Einstein's rhetorical versatility to his effectiveness as both a scientist and a social commentator.</li><li>Consider analyzing how quotation marks serve different functions in each passage (defining terms in Passage A versus distancing in Passage B).</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question 3 -->
+        <div class="question-card">
+            <div class="question-header">
+                <h2>Question 3 - 'Argument'</h2>
+                <div class="score-badge">
+                    <span>Score: 6</span>
+                </div>
+            </div>
+            <div class="question-body">
+                <div class="summary-section">
+                    <h3>Summary</h3>
+                    <p>The essay presents a nuanced thesis about Goethe's mindset being effective for mentor relationships (parents, teachers, coaches) while potentially harmful when others aren't demonstrating growth effort. Your evidence and reasoning are strong, particularly the personal examples about your debate coach and Beth, though you could incorporate broader historical or literary references. Consider placing your thesis earlier in the introduction, more explicitly addressing the 'realistic' aspect from the prompt, and exploring societal implications beyond personal relationships to add another layer of sophistication to your argument.</p>
+                </div>
+                
+                <button class="breakdown-toggle" aria-expanded="false" aria-controls="q3-breakdown">
+                    View Detailed Breakdown
+                    <span class="icon">▼</span>
+                </button>
+                
+                <div id="q3-breakdown" class="breakdown-content">
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Thesis</h4>
+                            <div class="criteria-score full-score">Score: 1/1</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>The thesis statement in this essay appears as the concluding sentence of the first paragraph: "While this mindset can be extremely harmful when people are not demonstrating effort at growth, it is an effective guide to many personal relationships — particularly parents, teachers, and coaches." This is a defensible thesis that directly responds to the prompt by taking a nuanced position on the validity of Goethe's statement as a guide for personal relationships. The thesis acknowledges both the benefits of the approach (for mentor figures) and its limitations (when others aren't demonstrating growth effort), showing analytical complexity rather than just agreeing or disagreeing with the prompt.</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <ul><li>Consider making the thesis more prominent by placing it earlier in the introduction</li><li>The thesis could more explicitly address the 'realistic' aspect mentioned in the prompt</li><li>Further clarify what makes this mindset 'extremely harmful' in certain contexts to strengthen the argument's specificity</li><li>Consider addressing broader implications beyond just mentor-mentee relationships to fully respond to the prompt's scope</li></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Evidence & Reasoning</h4>
+                            <div class="criteria-score full-score">Score: 4/4</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>This response earns 4 points for evidence and commentary. The essay develops a clear line of reasoning that acknowledges nuance in applying Goethe's principle across different relationships. It consistently provides specific evidence to support claims, including Dr. David Yeager's book '10 to 25' with its principle of 'high expectations, high support,' the personal experience with a debate coach who 'treats me like I'm already a champion,' and the detailed narrative about Beth with specific examples of her behavior patterns. Each piece of evidence is followed by thorough explanation of how it connects to the argument about when Goethe's approach works (in mentor relationships) and when it doesn't (in personal relationships without mutual effort). The detailed account of the friendship with Beth particularly stands out as it provides concrete details ('spread a rumor about me having an eating disorder') and explains how this experience proves the limitations of Goethe's principle when the other person makes no effort to improve.</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <p>While the evidence and commentary are strong throughout, the essay could strengthen its argument by: (1) Including a broader range of examples beyond personal experience, such as historical or literary references where treating people according to their potential yielded significant results; (2) More explicitly connecting the debate coach example to the thesis by explaining how this relationship differs from the Beth scenario in terms of commitment and role expectations; and (3) Adding more specific details about how the mentor figures (parents, teachers) in paragraph 2 balance 'high expectations' with 'high support' in practical terms to make Goethe's principle work effectively. These additions would further strengthen the already solid connection between evidence and reasoning.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h4>Sophistication</h4>
+                            <div class="criteria-score zero-score">Score: 1/1</div>
+                        </div>
+                        
+                        <div class="comment-section">
+                            <p><em>Commentary:</em></p>
+                            <p>This essay demonstrates sophistication of thought through both a nuanced argument that explores complexities and a vivid, persuasive writing style. The writer builds a thoughtful argument about the conditional validity of Goethe's statement, exploring the tension between the ideal of treating people as their best selves and the practical limitations of this approach. The essay acknowledges that while this mindset is crucial in mentor-mentee relationships, it can become harmful in peer relationships when the recipient makes no reciprocal effort. This complexity is captured in the line: 'While this mindset can be extremely harmful when people are not demonstrating effort at growth, it is an effective guide to many personal relationships — particularly parents, teachers, and coaches.' The writer further develops this nuance through the Beth anecdote, which demonstrates how the philosophy breaks down when applied indiscriminately. The essay also uses vivid language and effective rhetorical devices throughout, such as the opening reflection that 'Our lives are a product of every time someone chooses to take a chance on us' and the closing call to action: 'Afterall, that's why you're here today. And maybe, you can be the reason someone else is here tomorrow.' These bookends create a compelling frame for the entire argument.</p>
+                        </div>
+                        
+                        <div class="improvement-section">
+                            <h5>Improvement suggestions:</h5>
+                            <ul><li>Deepen the analysis of Dr. Yeager's principle of 'high expectations, high support' by exploring potential tensions or drawbacks even within mentoring relationships - this would add another layer of complexity to an already strong argument.</li><li>More explicitly address potential counterarguments, such as situations where treating people as their best selves might reinforce harmful power dynamics or create unrealistic expectations.</li><li>Develop the societal implications of this philosophy beyond personal relationships - how might this principle apply to institutional contexts like criminal justice, education policy, or healthcare?</li><li>While the Beth example effectively illustrates limitations, consider analyzing how different phases of relationships might require different applications of Goethe's principle, establishing a more dynamic framework rather than simply identifying when it doesn't work.</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
